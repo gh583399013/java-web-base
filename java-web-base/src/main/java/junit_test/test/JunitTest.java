@@ -32,8 +32,8 @@ import org.springframework.web.context.WebApplicationContext;
 @WebAppConfiguration    
 @ContextConfiguration({"classpath*:/beans.xml","classpath*:/junt-test-applicationContext.xml"})   
 //当然 你可以声明一个事务管理 每个单元测试都进行事务回滚 无论成功与否    
-@TransactionConfiguration(defaultRollback = true)    
-@Transactional   
+//@TransactionConfiguration(defaultRollback = true)    
+//@Transactional   
 public class JunitTest {  
     @Autowired    
     private WebApplicationContext wac;    
@@ -43,12 +43,6 @@ public class JunitTest {
     @Before    
     public void setup() {     
         this.mockMvc = webAppContextSetup(this.wac).build();  
-    }   
-      
-    @Test    
-    public void testLogin() throws Exception {    
-        mockMvc.perform((post("/loginTest").param("userName", "admin").param("password", "1"))).andExpect(status().isOk())    
-                .andDo(print());   
     }   
     
     @Test    
@@ -80,6 +74,17 @@ public class JunitTest {
 //    	res.setCharacterEncoding("UTF-8");
     	System.out.println(res.getContentAsString());
     } 
+    
+    @Test    
+    public void testLogin() throws Exception {   
+//    	mockMvc.perform((post("/test/test001").param("userName", "admin").param("password", "1")))
+//    	.andExpect(status().isOk())    
+//    	.andDo(print());  
+    	
+    	mockMvc.perform((post("/test/test003").param("id", "1110321207").param("name", "fengtao")))
+    	    	.andExpect(status().isOk())    
+    	    	.andDo(print());  
+    }     
       
     /*@Test   
     //有些单元测试你不希望回滚   

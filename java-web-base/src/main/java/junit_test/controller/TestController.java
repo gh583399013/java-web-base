@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import junit_test.entity.Student;
 import junit_test.service.TestService;
 
 @Controller
@@ -36,5 +37,12 @@ public class TestController {
 		String test = testService.getStr("new 一个对象");
 		System.out.println(test);
 		return test;
+	}
+
+	@RequestMapping(value = "/test003",method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public void login(HttpServletRequest requst,HttpServletResponse response,Student student){
+		System.out.println("id = " + student.getId());
+		System.out.println("name = " + student.getName());
 	}
 }
