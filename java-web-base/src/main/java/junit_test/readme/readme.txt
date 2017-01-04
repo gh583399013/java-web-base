@@ -1,0 +1,2 @@
+junit_test.test.JunitTest 类中有一个point-1
+解释了junit中测试controller @ResponseBody乱码的问题

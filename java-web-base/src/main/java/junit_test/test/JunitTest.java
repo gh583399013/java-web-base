@@ -59,6 +59,12 @@ public class JunitTest {
     	
     	MvcResult result = mockMvc.perform((post("/test/test001").param("userName", "admin").param("password", "1"))).andReturn();
     	MockHttpServletResponse res = result.getResponse();
+    	/*
+    	 * point-1
+    	 * 浏览器访问不乱码，但是junit访问怎么都乱码，必须setCharacterEncoding一次
+    	 * 原因是通过浏览器 我们是经过了web.xml中的过滤器，request和response都被强制编码了一次
+    	 * 但是junit不经过web.xml,所以默认编码是
+    	 */
     	res.setCharacterEncoding("UTF-8");
     	System.out.println(res.getContentAsString());
     }    
