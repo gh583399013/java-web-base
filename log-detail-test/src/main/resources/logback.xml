@@ -43,6 +43,28 @@
 		</encoder>
 	</appender>
 
+	<!-- 按照每天生成日志文件111 -->
+	<appender name="DateFile1"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/TestWeb.%d{yyyy-MM-dd}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!--日志文件输出的文件名 -->
+			<FileNamePattern>${LOG_PATH}/TestWeb.%d{yyyy-MM-dd}.%i.zip
+			</FileNamePattern>
+			<!--日志文件保留天数 -->
+			<MaxHistory>30</MaxHistory>
+		</rollingPolicy>
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>1MB</MaxFileSize>
+		</triggeringPolicy>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} -
+				%msg%n</pattern>
+		</encoder>
+	</appender>
+
 	<!-- 按照固定大小生成日志文件，超过最大索引覆盖 -->
 	<appender name="FixFile"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -66,11 +88,11 @@
 	<!-- 按照固定大小生成日志文件，超过最大索引覆盖 -->
 	<appender name="DateAndFixFile"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<!-- <file>/TestWeb.%d{yyyy-MM-dd}.log</file> -->
+		<file>TestWeb.%d{yyyy-MM-dd}.log</file>
 		<rollingPolicy
 			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
 			<!-- rollover daily -->
-			<fileNamePattern>${LOG_PATH}/TestWeb.log.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
+			<fileNamePattern>${LOG_PATH}/TestWeb.log.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 			<!-- each file should be at most 100MB, keep 60 days worth of history, 
 				but at most 20GB -->
 			<maxFileSize>1MB</maxFileSize>
@@ -82,12 +104,14 @@
 				%msg%n</pattern>
 		</encoder>
 	</appender>
+	
 
 	<!-- 日志输出级别 -->
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />
+		<!-- <appender-ref ref="DateFile1" /> -->
 		<!-- <appender-ref ref="DateFile" /> -->
-		<appender-ref ref="FixFile" />
-		<!-- <appender-ref ref="DateAndFixFile" /> -->
+		<!-- <appender-ref ref="FixFile" /> -->
+		<appender-ref ref="DateAndFixFile" />
 	</root>
 </configuration>
