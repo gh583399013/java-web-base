@@ -3,7 +3,7 @@
 <!-- 1、根节点<configuration>，包含下面三个属性： scan: 当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。 
 	scanPeriod: 设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。 
 	debug: 当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。 -->
-<configuration scan="true" scanPeriod="60 seconds" debug="false">
+<configuration scan="true" scanPeriod="60 seconds" debug="true">
 	<!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径 -->
 	<property name="LOG_PATH" value="/data/logs" />
 
@@ -31,7 +31,7 @@
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!--日志文件输出的文件名 -->
-			<FileNamePattern>${LOG_PATH}/TestWeb.%d{yyyy-MM-dd}.log
+			<FileNamePattern>${LOG_PATH}/TestWeb-DateFile.%d{yyyy-MM-dd}.log
 			</FileNamePattern>
 			<!--日志文件保留天数 -->
 			<MaxHistory>30</MaxHistory>
@@ -43,34 +43,13 @@
 		</encoder>
 	</appender>
 
-	<!-- 按照每天生成日志文件111 -->
-	<appender name="DateFile1"
-		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>/TestWeb.%d{yyyy-MM-dd}.log</file>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<!--日志文件输出的文件名 -->
-			<FileNamePattern>${LOG_PATH}/TestWeb.%d{yyyy-MM-dd}.%i.zip
-			</FileNamePattern>
-			<!--日志文件保留天数 -->
-			<MaxHistory>30</MaxHistory>
-		</rollingPolicy>
-		<triggeringPolicy
-			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-			<MaxFileSize>1MB</MaxFileSize>
-		</triggeringPolicy>
-		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} -
-				%msg%n</pattern>
-		</encoder>
-	</appender>
 
 	<!-- 按照固定大小生成日志文件，超过最大索引覆盖 -->
 	<appender name="FixFile"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>/TestWeb.%d{yyyy-MM-dd}.log</file>
+		<file>${LOG_PATH}/TestWeb-FixFile.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-			<fileNamePattern>${LOG_PATH}/TestWeb.%i.log.zip</fileNamePattern>
+			<fileNamePattern>${LOG_PATH}/TestWeb-FixFile.%i.log.zip</fileNamePattern>
 			<minIndex>1</minIndex>
 			<maxIndex>3</maxIndex>
 		</rollingPolicy>
@@ -88,11 +67,52 @@
 	<!-- 按照固定大小生成日志文件，超过最大索引覆盖 -->
 	<appender name="DateAndFixFile"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>TestWeb.%d{yyyy-MM-dd}.log</file>
+		<file>TestWeb-DateAndFixFile1.%d{yyyy-MM-dd}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${LOG_PATH}/TestWeb.log.%d{yyyy-MM-dd}.%i.log.zip
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>1MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} -
+				%msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- 日志文件输出 -->
+	<appender name="DateAndFixFile"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${LOG_PATH}/TestWeb-DateAndFixFile(not-SizeAndTime).log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${LOG_PATH}/TestWeb-DateAndFixFile(not-SizeAndTime).%d{yyyy-MM-dd}.%i.zip
+			</FileNamePattern>
+			<!-- 当天的日志大小 超过${log.max.size}时,压缩日志并保存 -->
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>1MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<!-- 日志输出的文件的格式 -->
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} -
+				%msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- SizeAndTime策略，打印结果为：xx.0.log、xx.1.log、xx.2.log，log（也可以写成txt后缀）这种 -->
+	<appender name="DateAndFixFile_SizeAndTime_LOG"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_PATH}/TestWeb-DateAndFixFile(log).log</file>
 		<rollingPolicy
 			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
 			<!-- rollover daily -->
-			<fileNamePattern>${LOG_PATH}/TestWeb.log.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<fileNamePattern>${LOG_PATH}/TestWeb-DateAndFixFile(log).%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
 			<!-- each file should be at most 100MB, keep 60 days worth of history, 
 				but at most 20GB -->
 			<maxFileSize>1MB</maxFileSize>
@@ -105,13 +125,49 @@
 		</encoder>
 	</appender>
 	
+	<!-- 貌似压缩出错，产生的tmp文件根本没有压缩进zip -->
+	<!-- SizeAndTime策略，打印结果为：xx.0.zip、xx.1.zip、xx.2.zip这种 -->
+	<appender name="DateAndFixFile_SizeAndTime_ZIP"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_PATH}/TestWeb-DateAndFixFile(zip).log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${LOG_PATH}/TestWeb-DateAndFixFile(zip).%d{yyyy-MM-dd}.%i.zip
+			</fileNamePattern>
+			<!-- each file should be at most 100MB, keep 60 days worth of history, 
+				but at most 20GB -->
+			<maxFileSize>1MB</maxFileSize>
+			<maxHistory>60</maxHistory>
+			<totalSizeCap>20GB</totalSizeCap>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} -
+				%msg%n</pattern>
+		</encoder>
+	</appender>	
+
+	<!-- 日志文件输出 -->
+	<appender name="file"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${log.base}/${log.moduleName}/${log.moduleName}.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}/${log.moduleName}/archive/${log.moduleName}_%d{yyyy-MM-dd}.%i.log.zip
+			</FileNamePattern>
+			<!-- 当天的日志大小 超过${log.max.size}时,压缩日志并保存 -->
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>${log.max.size}</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<!-- 日志输出的文件的格式 -->
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern><![CDATA[%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level[%.6thread]%logger{36}.%method<%L> %msg%n]]></pattern>
+		</layout>
+	</appender>
 
 	<!-- 日志输出级别 -->
 	<root level="INFO">
-		<appender-ref ref="STDOUT" />
-		<!-- <appender-ref ref="DateFile1" /> -->
-		<!-- <appender-ref ref="DateFile" /> -->
-		<!-- <appender-ref ref="FixFile" /> -->
 		<appender-ref ref="DateAndFixFile" />
 	</root>
 </configuration>
