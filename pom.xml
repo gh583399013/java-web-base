@@ -8,6 +8,7 @@
   <modules>
     <module>junit-test-controller</module>
     <module>log-detail-test</module>
+    <module>lucene-demo</module>
   </modules>
   	<profiles>  
 	    <profile>  
