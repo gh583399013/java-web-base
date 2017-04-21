@@ -1,5 +1,7 @@
 package test001;
 
+import java.util.Scanner;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,15 +17,21 @@ public class Test001 {
 	
 	//这种方式产生的日志文件压缩就是正常的
 	public static void printB(){
-		for (int i = 0; i < 15; i++) {
-			try {
-				Thread.sleep(1500);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		Scanner scanner = new Scanner(System.in);
+		int flag = scanner.nextInt();
+		while(flag != -1){
+			for (int i = 0; i < 15; i++) {
+				try {
+					Thread.sleep(1500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				printA();
 			}
-			printA();
+			flag = scanner.nextInt();
 		}
+		scanner.close();
 	}
 	public static void main(String[] args) {
 //		printA();
